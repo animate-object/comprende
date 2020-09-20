@@ -7,6 +7,11 @@ verify_ssl = true
 
 [packages]
 textblob = "*"
+attr = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.8"
+
+[scripts]
+test = "pytest tests/"
