@@ -6,7 +6,7 @@ Generating efficient reading recall tests and basic understanding (topics, autho
 ## Installation
 
 ### Pre-reqs
-* > python 3.8 (might work with lower pythons, ymmv)
+* `> python 3.8` (might work with lower pythons, ymmv)
 * pipenv
 
 1. clone the repo
