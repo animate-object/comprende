@@ -4,14 +4,21 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+autopep8 = "*"
+isort = "*"
 
 [packages]
 textblob = "*"
 attr = "*"
 pytest = "*"
+pylint = "*"
 
 [requires]
 python_version = "3.8"
 
 [scripts]
-test = "pytest tests/"
+test = "pytest comprende/tests/"
+lint = "pylint --rcfile config/pylint.rc comprende tests"
+
+# NLP
+init_corpora = 'bash -c "mkdir nltk && python -m textblob.download_corpora"'
