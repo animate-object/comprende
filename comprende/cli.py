@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 from comprende.util import analyze_file
 from comprende.core.comprende import ModuleTypes, ALL_MODULES
+from comprende.core.types import Question
 from attr import asdict
 from json import dumps
 
@@ -33,6 +34,12 @@ def main():
         default=1
     )
 
+    parser.add_argument(
+        '-d',
+        '--debug',
+        action='store_true',
+    )
+
     args = parser.parse_args()
 
     kwargs = {}
@@ -43,18 +50,15 @@ def main():
         else [m.value for m in args.modules]
     )
     kwargs['desired_ct'] = args.count
+    kwargs['debug'] = args.debug
 
     results = analyze_file(
         args.file,
         **kwargs,
     )
 
-    json = dumps([
-        asdict(q) for q in results
-    ])
-
-    print(json)
+    return Question.as_json(*results)
 
 
 if __name__ == '__main__':
-    main()
+    print(main())

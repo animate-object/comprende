@@ -1,7 +1,7 @@
 import os
 from comprende.core.types import Module, Question
 from comprende.core.comprende import ALL_MODULES
-from typing import List, Optional, Generator
+from typing import List, Optional, Generator, Dict
 from textblob import TextBlob
 from random import choice, seed
 from itertools import chain
@@ -41,7 +41,8 @@ def analyze_file(
     file_path: str,
     local_data: bool = True,
     modules: List[Module] = ALL_MODULES,
-    desired_ct: int = 1
+    desired_ct: int = 1,
+    debug: bool = False,
 ) -> Generator[Question, None, None]:
 
     text = full_text(
@@ -50,4 +51,6 @@ def analyze_file(
     )
     blob = TextBlob(text)
 
-    return chain(choice(modules).analyze(blob, 1)[0] for _ in range(desired_ct))
+    return chain.from_iterable(
+        choice(modules).analyze(blob, 1, {'debug': debug}) for _ in range(desired_ct)
+    )

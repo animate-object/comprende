@@ -49,12 +49,31 @@ ALL_Q_TYPES = [
 ]
 
 
+def _gen_question(
+    q_type: ImportantWordQuestionType,
+    phrase: str,
+    freq: int,
+    debug: bool,
+) -> Question:
+    q = Question(
+        prompt=q_type.prompt,
+        correct_options=[phrase],
+        module_name=MODULE_NAME,
+        subtype=q_type.name.lower(),
+    )
+
+    if debug:
+        q.debug = {'freq': freq}
+    return q
+
+
 def important_words_analyzer(
     text: Union[str, TextBlob],
     desired_ct: int = 1,
     strip_first_sentence: bool = True,
     allow_q_types: List[ImportantWordQuestionType] = ALL_Q_TYPES,
     fuzz_by: float = 0,
+    debug: bool = False,
 ) -> List[Question]:
     blob = text if type(text) == TextBlob else TextBlob(text)
     if strip_first_sentence and len(blob.sentences) > 1:
@@ -76,11 +95,11 @@ def important_words_analyzer(
         shuffle(phrases)
 
     return [
-        Question(
-            prompt=q_type.prompt,
-            correct_options=[p[0]],
-            module_name=MODULE_NAME,
-            subtype=q_type.name.lower(),
+        _gen_question(
+            q_type=q_type,
+            phrase=p[0],
+            freq=p[1],
+            debug=debug,
         )
         for p in
         phrases[:min(desired_ct, len(phrases))]
@@ -122,9 +141,10 @@ def frequent_noun_phrases(
 
 
 IMPORTANT_WORDS = Module(
-    analyze=lambda text, desired_ct: important_words_analyzer(
+    analyze=lambda text, desired_ct, kwargs: important_words_analyzer(
         text,
         desired_ct=desired_ct,
         fuzz_by=0.1,
+        **kwargs,
     )
 )
