@@ -1,5 +1,11 @@
 import os
-from comprende.core.comprende import Module
+from comprende.core.types import Module, Question
+from comprende.core.comprende import ALL_MODULES
+from typing import List, Optional, Generator
+from textblob import TextBlob
+from random import choice, seed
+from itertools import chain
+
 
 SRC_DIR = os.path.dirname(__file__)
 PROJ_ROOT = os.path.abspath(os.path.dirname(SRC_DIR))
@@ -13,7 +19,7 @@ assert DATA_DIR.endswith('/comprende/tests/data')
 
 def full_text(
     file_path: str,
-    root_dir: str = DATA_DIR,
+    root_dir: Optional[str] = DATA_DIR,
 ) -> str:
     """Easily load test data by name
 
@@ -24,15 +30,24 @@ def full_text(
     Returns:
         str: the content of the file
     """
-    path = os.path.join(root_dir, file_path)
+    path = os.path.join(root_dir, file_path) \
+        if root_dir else file_path
 
     with open(path, 'r') as text_in:
         return text_in.read()
 
 
-def perform_analysis(
-    text: str,
-    module: Module,
-):
-    result = module.analyze(text)
-    return result
+def analyze_file(
+    file_path: str,
+    local_data: bool = True,
+    modules: List[Module] = ALL_MODULES,
+    desired_ct: int = 1
+) -> Generator[Question, None, None]:
+
+    text = full_text(
+        file_path,
+        root_dir=DATA_DIR if local_data else None,
+    )
+    blob = TextBlob(text)
+
+    return chain(choice(modules).analyze(blob, 1)[0] for _ in range(desired_ct))

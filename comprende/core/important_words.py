@@ -1,4 +1,4 @@
-from comprende.core.comprende import Module, Question
+from comprende.core.types import Module, Question
 from typing import List, Optional, Tuple, Dict, Union
 from textblob import TextBlob, WordList
 from enum import Enum
@@ -7,6 +7,8 @@ from math import floor
 from collections import defaultdict
 
 seed()
+
+MODULE_NAME = 'important_words'
 
 
 class ImportantWordQuestionType(Enum):
@@ -66,17 +68,22 @@ def important_words_analyzer(
         extra_ = floor(fuzz_by * len(blob.noun_phrases))
         noun_phrase_ct = min(desired_ct + extra_, len(blob.noun_phrases))
 
-    phrases = frequent_noun_phrases(
+    phrases = list(frequent_noun_phrases(
         blob, noun_phrase_ct, q_config['least_frequent']
-    )
+    ))
 
     if fuzz_by:
         shuffle(phrases)
 
     return [
-        Question(prompt=q_type.prompt, correct_options=[p])
+        Question(
+            prompt=q_type.prompt,
+            correct_options=[p[0]],
+            module_name=MODULE_NAME,
+            subtype=q_type.name.lower(),
+        )
         for p in
-        phrases
+        phrases[:min(desired_ct, len(phrases))]
     ]
 
 
@@ -115,5 +122,9 @@ def frequent_noun_phrases(
 
 
 IMPORTANT_WORDS = Module(
-    analyze=important_words_analyzer
+    analyze=lambda text, desired_ct: important_words_analyzer(
+        text,
+        desired_ct=desired_ct,
+        fuzz_by=0.1,
+    )
 )

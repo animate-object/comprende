@@ -1,17 +1,25 @@
-import attr
-from typing import Optional, List, Callable, Union, Generator
+from comprende.core.types import Module
+from comprende.core.important_words import IMPORTANT_WORDS
+from typing import List
+from enum import Enum
+
+ALL_MODULES: List[Module] = [
+    IMPORTANT_WORDS,
+]
 
 
-@attr.s(auto_attribs=True)
-class Question:
-    prompt: str
-    correct_options: List[str]
-    addition_option: List[str] = []
+class ModuleTypes(Enum):
+    IMPORTANT_WORDS = IMPORTANT_WORDS
 
+    def __str__(self):
+        return self.name.lower()
 
-Analyzer = Callable[[str, int], List[Question]]
+    def __repr__(self):
+        return str(self)
 
-
-@attr.s(auto_attribs=True)
-class Module():
-    analyze: Analyzer
+    @staticmethod
+    def from_string(s: str):
+        try:
+            return ModuleTypes[s.upper()]
+        except KeyError:
+            return s

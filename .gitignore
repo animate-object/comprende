@@ -1,3 +1,6 @@
 nltk/*
 .pytest_cache
 .vscode
+
+# proprietary test data for personal use
+comprende/tests/data/proprietary/*

@@ -12,7 +12,7 @@ from textblob import TextBlob
 
 @pytest.fixture
 def wn_face_coverings():
-    text = full_text('wikinews/face_coverings_to_be_mandatory')
+    text = full_text('wikinews/face_coverings')
     assert len(text) > 0
     return text
 
