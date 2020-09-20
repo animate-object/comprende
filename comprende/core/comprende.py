@@ -6,7 +6,7 @@ from typing import Optional, List, Callable, Union, Generator
 class Question:
     prompt: str
     correct_options: List[str]
-    addition_option: List[str]
+    addition_option: List[str] = []
 
 
 Analyzer = Callable[[str, int], List[Question]]
