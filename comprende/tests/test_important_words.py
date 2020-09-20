@@ -1,6 +1,6 @@
 import pytest
 from comprende.util import full_text
-from comprende.core.important_words import IMPORTANT_WORDS, find_noun_phrases
+from comprende.core.important_words import IMPORTANT_WORDS, find_noun_phrases, most_frequent_noun_phrases
 from pprint import pprint
 
 
@@ -29,4 +29,17 @@ def test_important_words__produces_questions(
 def test_noun_phrases(
     wn_face_coverings,
 ):
-    find_noun_phrases(wn_face_coverings)
+    noun_phrases = find_noun_phrases(wn_face_coverings)
+    pprint([n for n in noun_phrases])
+
+
+def test_most_frequent_noun_phrases(
+    wn_face_coverings,
+):
+    all_by_frequency = most_frequent_noun_phrases(wn_face_coverings)
+    five_most_frequent = most_frequent_noun_phrases(wn_face_coverings, 5)
+
+    assert len(five_most_frequent) == 5
+    assert len(all_by_frequency) > len(five_most_frequent)
+
+    print(five_most_frequent)
