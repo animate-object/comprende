@@ -22,3 +22,6 @@ lint = "pylint --rcfile config/pylint.rc comprende tests"
 
 # NLP
 init_corpora = 'bash -c "mkdir nltk && python -m textblob.download_corpora"'
+
+# cli
+cli = 'python -m comprende.cli'
