@@ -7,12 +7,14 @@ def important_words_analyzer(
     text: str,
     desired_ct: int = 1
 ) -> List[Question]:
+
     return []
 
 
-def most_frequent_noun_phrases(
+def frequent_noun_phrases(
     text: str,
     desired_ct: Optional[int] = None,
+    least_frequent: bool = False,
 ) -> Dict[str, int]:
     """Return a dict of up to {desired_ct} pairs
     of <noun_phrase>: <freq>
@@ -39,9 +41,8 @@ def most_frequent_noun_phrases(
         sorted_by_freq = sorted(
             phrase_freq,
             key=lambda t: t[1],
-            reverse=True
+            reverse=not least_frequent,
         )
-        print(sorted_by_freq)
         return dict(
             sorted_by_freq[:min(len(sorted_by_freq) - 1, desired_ct)]
         )

@@ -1,7 +1,8 @@
 import pytest
 from comprende.util import full_text
-from comprende.core.important_words import IMPORTANT_WORDS, find_noun_phrases, most_frequent_noun_phrases
+from comprende.core.important_words import IMPORTANT_WORDS, find_noun_phrases, frequent_noun_phrases
 from pprint import pprint
+from statistics import mean
 
 
 @pytest.fixture
@@ -33,13 +34,16 @@ def test_noun_phrases(
     pprint([n for n in noun_phrases])
 
 
-def test_most_frequent_noun_phrases(
+def test_frequent_noun_phrases(
     wn_face_coverings,
 ):
-    all_by_frequency = most_frequent_noun_phrases(wn_face_coverings)
-    five_most_frequent = most_frequent_noun_phrases(wn_face_coverings, 5)
+    all_by_frequency = frequent_noun_phrases(wn_face_coverings)
+    four_most_frequent = frequent_noun_phrases(wn_face_coverings, 4)
+    four_least_frequent = frequent_noun_phrases(wn_face_coverings, 4, True)
 
-    assert len(five_most_frequent) == 5
-    assert len(all_by_frequency) > len(five_most_frequent)
-
-    print(five_most_frequent)
+    assert len(all_by_frequency) > 4
+    assert len(four_most_frequent) == 4
+    assert all(v > 1 for v in four_most_frequent.values())
+    assert len(all_by_frequency) > len(four_most_frequent)
+    assert mean(four_most_frequent.values()) > mean(all_by_frequency.values())
+    assert mean(all_by_frequency.values()) > mean(four_least_frequent.values())
